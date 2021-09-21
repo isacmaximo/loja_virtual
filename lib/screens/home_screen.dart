@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/tabs/home_tab.dart';
+import 'package:loja_virtual/widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -19,7 +20,13 @@ class HomeScreen extends StatelessWidget {
       //os filhos vão ser as telas
       children: <Widget>[
 
-        HomeTab()
+        //para ter a aba de navegação precisa estar dentro de um scaffold
+        Scaffold(
+          body: HomeTab(),
+          //widget de navegação
+          drawer: CustomDrawer(),
+        )
+
 
       ],
     );
