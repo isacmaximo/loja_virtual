@@ -1,6 +1,7 @@
 //Widget - Navegador das Páginas
 
 import 'package:flutter/material.dart';
+import 'package:loja_virtual/tiles/drawer_tile.dart';
 
 class CustomDrawer extends StatelessWidget {
 
@@ -39,16 +40,53 @@ class CustomDrawer extends StatelessWidget {
                 height: 170.0,
                 child: Stack(
                   children: <Widget>[
+
+                    //nome da loja
                     Positioned(
                       top: 8.0,
                       left: 0.0,
                       child: Text("I.M.\nClothing", style: TextStyle(fontSize: 34.0, fontWeight: FontWeight.bold),),
-                    )
+                    ),
+
+                    //olá
+                    Positioned(
+                      left: 0.0,
+                      bottom: 0.0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+
+                          Text("Olá,", style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold),
+                          ),
+
+                         GestureDetector(
+                           child: Text("Entre ou Cadastre-se,", style: TextStyle(
+                               color: Theme.of(context).primaryColor,
+                               fontSize: 16.0,
+                               fontWeight: FontWeight.bold)
+                           ),
+                           onTap: (){
+
+                           },
+                         )
+
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              )
-            ],
+              ),
 
+              Divider(),
+              //widgets dos botões na "gaveta de navegação"
+              DrawerTile(Icons.home, "Início"),
+              DrawerTile(Icons.list, "Produtos"),
+              DrawerTile(Icons.location_on, "Lojas"),
+              DrawerTile(Icons.playlist_add_check, "Meus Pedidos"),
+
+            ],
           )
         ],
       ),
