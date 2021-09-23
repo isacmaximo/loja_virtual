@@ -1,8 +1,7 @@
-//Tela de Login
-import 'package:flutter/material.dart';
-import 'package:loja_virtual/screens/singup_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+
+class SingUpScreen extends StatelessWidget {
 
   //chave global para acessar o formulário:
   final _formKey = GlobalKey<FormState>();
@@ -11,25 +10,10 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Entrar"),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text("Criar Conta"),
         centerTitle: true,
         actions: <Widget>[
-
-          ElevatedButton(
-            child: Text("CRIAR CONTA",
-              style: TextStyle(
-                fontSize: 15.0,
-                color: Colors.white,),),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
-            onPressed: (){
-              //podemos usar o pushReplacement, para quando clicar subistituir pela tela pela Criar Conta
-              //pois ao criar a conta o usuário já vai estar autenticado
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => SingUpScreen())
-              );
-            },
-          ),
         ],
       ),
 
@@ -41,7 +25,23 @@ class LoginScreen extends StatelessWidget {
 
             TextFormField(
               decoration: InputDecoration(
-                hintText: "E-mail"
+                  hintText: "Nome Completo"
+              ),
+              validator: (text){
+                if (text.isEmpty){
+                  return "Nome Inválido";
+                }
+                else{
+                  return null;
+                }
+              },
+            ),
+
+            SizedBox(height: 16.0,),
+
+            TextFormField(
+              decoration: InputDecoration(
+                  hintText: "E-mail"
               ),
               keyboardType: TextInputType.emailAddress,
               validator: (text){
@@ -73,15 +73,20 @@ class LoginScreen extends StatelessWidget {
 
             ),
 
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: (){
-                },
-                child: Text("Esqueci minha senha",
-                  textAlign: TextAlign.right,
-                  style: TextStyle(color: Theme.of(context).primaryColor),),
+            SizedBox(height: 16.0,),
+
+            TextFormField(
+              decoration: InputDecoration(
+                  hintText: "Endereço"
               ),
+              validator: (text){
+                if (text.isEmpty){
+                  return "Endereço Inválido";
+                }
+                else{
+                  return null;
+                }
+              },
             ),
 
             SizedBox(height: 16.0,),
@@ -89,7 +94,7 @@ class LoginScreen extends StatelessWidget {
             SizedBox(
               height: 44.0,
               child: ElevatedButton(
-                child: Text("Entrar", style: TextStyle(
+                child: Text("Criar Conta", style: TextStyle(
                   fontSize: 18.0,
                 ),),
                 style: ButtonStyle(
@@ -102,7 +107,6 @@ class LoginScreen extends StatelessWidget {
                 },
               ),
             ),
-
 
           ],
         ),
