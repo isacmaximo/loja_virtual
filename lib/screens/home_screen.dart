@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/tabs/home_tab.dart';
+import 'package:loja_virtual/tabs/products_tab.dart';
 import 'package:loja_virtual/widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -21,11 +22,25 @@ class HomeScreen extends StatelessWidget {
       children: <Widget>[
 
         //para ter a aba de navegação precisa estar dentro de um scaffold
+
+        //Home
         Scaffold(
           body: HomeTab(),
           //widget de navegação
-          drawer: CustomDrawer(),
-        )
+          drawer: CustomDrawer(_pageController),
+        ),
+
+        //Categorias
+        Scaffold(
+          appBar: AppBar(
+            title: Text("Categorias"),
+            centerTitle: true,
+          ),
+          drawer: CustomDrawer(_pageController),
+          body: ProductsTab(),
+        ),
+
+
 
 
       ],

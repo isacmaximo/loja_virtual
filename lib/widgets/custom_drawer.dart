@@ -5,6 +5,11 @@ import 'package:loja_virtual/tiles/drawer_tile.dart';
 
 class CustomDrawer extends StatelessWidget {
 
+  //controlador de paginas:
+  final PageController _pageController;
+
+  CustomDrawer(this._pageController);
+
   @override
   Widget build(BuildContext context) {
 
@@ -81,10 +86,10 @@ class CustomDrawer extends StatelessWidget {
 
               Divider(),
               //widgets dos botões na "gaveta de navegação"
-              DrawerTile(Icons.home, "Início"),
-              DrawerTile(Icons.list, "Produtos"),
-              DrawerTile(Icons.location_on, "Lojas"),
-              DrawerTile(Icons.playlist_add_check, "Meus Pedidos"),
+              DrawerTile(Icons.home, "Início", _pageController, 0),
+              DrawerTile(Icons.list, "Produtos", _pageController, 1),
+              DrawerTile(Icons.location_on, "Lojas", _pageController, 2),
+              DrawerTile(Icons.playlist_add_check, "Meus Pedidos", _pageController, 3),
 
             ],
           )
