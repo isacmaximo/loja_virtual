@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/datas/product_data.dart';
+import 'package:loja_virtual/screens/product_screen.dart';
 
 
 //O ProductData contém todos os campos sobre o produto
@@ -16,6 +17,14 @@ class ProductTile extends StatelessWidget {
   Widget build(BuildContext context) {
     //o InkWell diferentemente do Gesture Detector, tem uma animação melhor ao tocar no widget
     return InkWell(
+
+      //ao clicar
+      onTap: (){
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => ProductScreen(product))
+        );
+      },
+
       child: Card(
 
         //se o tipo for grade então retorna uma coluna , se não retorna uma linha
@@ -44,7 +53,8 @@ class ProductTile extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                         fontSize: 17.0,
                         fontWeight: FontWeight.bold
-                      ),),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -52,9 +62,38 @@ class ProductTile extends StatelessWidget {
           ],
 
         ) : Row(
+          children: <Widget>[
+
+            //imagem:
+            Flexible(
+              flex: 1,
+              child: Image.network(product.images[0], fit: BoxFit.cover,),
+            ),
+
+            //texto:
+            Flexible(
+              flex: 1,
+              child: Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    Text(product.title, style: TextStyle(fontWeight: FontWeight.w500),),
+                    Text("R\$ ${product.price.toStringAsFixed(2)}",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          ],
 
         ),
-
       ),
     );
   }
