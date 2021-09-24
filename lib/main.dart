@@ -14,9 +14,13 @@
 
 //libraries necessárias:
 import 'package:flutter/material.dart';
+import 'package:loja_virtual/models/user_model.dart';
 import 'screens/home_screen.dart';
+import 'package:scoped_model/scoped_model.dart';
 
-
+//* Para utilizar o ScopedModel, temos que usa-lo na main, para obter-mos as informações do usuário
+//ele fica sendo o widget principal: ScopedModel<TipoDeModelo>
+//isso faz com que possamos ter acesso as informações de login em qualquer lugar
 
 //função principal
 void main() => runApp(new MyApp());
@@ -25,16 +29,19 @@ class MyApp extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    return MaterialApp(
-      title: "Loja Virtual",
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        //podemos definir a cor primária pelo rgb,
-          //onde podemos configurar (opacidade, vermelho, verde, azul)
-        primaryColor: Color.fromARGB(255, 4, 125, 141)
+    return ScopedModel<UserModel>(
+      model: UserModel(),
+      child:  MaterialApp(
+        title: "Loja Virtual",
+        theme: ThemeData(
+            primarySwatch: Colors.blue,
+            //podemos definir a cor primária pelo rgb,
+            //onde podemos configurar (opacidade, vermelho, verde, azul)
+            primaryColor: Color.fromARGB(255, 4, 125, 141)
+        ),
+        debugShowCheckedModeBanner: false,
+        home: HomeScreen(),
       ),
-      debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
     );
   }
 
