@@ -20,6 +20,15 @@ class UserModel extends Model{
   //indica se está processando alguma coisa
   bool isLoading = false;
 
+  //carregar o usuário logado desde o início
+  @override
+  void addListener(VoidCallback listener) {
+    super.addListener(listener);
+
+    _loadCurrentUser();
+
+  }
+
   //função vai receber os dados do usuário, uma senha, função que diz se foi um sucesso, função que diz se não deu certo
   //como essa função tem muitos parâmetros, então podemos utilizar o @required para lembrar os parâmetros
   void singUp({@required Map<String,dynamic> userData, @required String pass,
@@ -54,11 +63,49 @@ class UserModel extends Model{
 
   }
 
-  void singIn(){
+  //logar
+  void singIn({@required String email, @required String pass,
+    @required VoidCallback onSuccess, @required VoidCallback onFail}) async{
+
+    isLoading = true;
+    notifyListeners();
+
+    _auth.signInWithEmailAndPassword(email: email, password: pass).then((user) async{
+      firebaseUser = user;
+
+      await _loadCurrentUser();
+
+      onSuccess();
+      isLoading = false;
+      notifyListeners();
+
+    }).catchError((error){
+      onFail();
+      isLoading = false;
+      notifyListeners();
+    });
+
   }
 
-  void recoverPass(){
+  //função de sair
+  void singOut() async{
+    await _auth.signOut();
 
+    //agora o usuário e seus dados são vazios:
+    userData = Map();
+    firebaseUser = null;
+
+    notifyListeners();
+  }
+
+  //recuperar a senha:
+  void recoverPass(String email){
+    _auth.sendPasswordResetEmail(email: email);
+  }
+
+  //se o usuário estiver logado
+  bool isLoggedIn(){
+    return firebaseUser != null;
   }
 
   //salvando os dados do usuário
@@ -66,6 +113,22 @@ class UserModel extends Model{
     this.userData = userData;
     //No Firestore: coleção (usuários), documento (id do usuário), setando os dados
     await Firestore.instance.collection("users").document(firebaseUser.uid).setData(userData);
+  }
+
+  //pegando o usuário atual
+  Future<Null> _loadCurrentUser() async{
+    //se for nulo, vai tentar logar
+    if (userData == null){
+      firebaseUser = await _auth.currentUser();
+    }
+    //se logou:
+    if (userData != null){
+      if(userData["name"] == null){
+        DocumentSnapshot docUser = await Firestore.instance.collection("users").document(firebaseUser.uid).get();
+        userData = docUser.data;
+      }
+    }
+    notifyListeners();
   }
 
 }
