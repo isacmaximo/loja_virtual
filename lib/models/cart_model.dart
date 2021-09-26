@@ -76,6 +76,93 @@ class CartModel extends Model{
     this.discountPercentage = discountPercentage;
   }
 
+  //função que  vai atualizar os preços
+  void updatePrices(){
+    notifyListeners();
+  }
+
+  //função que irá retornar o subtotal
+  //começa com 0.0
+  //para cada um dos produtos , será colocado em c
+  //vai pegar a quantidade daquele produto e mutiplicar pelo seu preço, e somar esses ítens
+  double getProductsPrice(){
+    double price = 0.0;
+    for(CartProduct c in products){
+      if(c.productData != null){
+        price += c.quantity * c.productData.price;
+      }
+    }
+    return price;
+  }
+
+  //função que irá retornar o desconto
+  //irá pegar o subtotal e aplicar do desconto da porcentagem
+  double getDiscount(){
+    return getProductsPrice() * discountPercentage / 100;
+  }
+
+  //função que irá retornar o valor da entrega
+  double getShipPrice(){
+    return 0.00;
+  }
+
+  //Função que irá fazer o pedido
+  Future<String> finishOrder() async{
+    //apenas para não dar problema, uma medida de segurança
+    if(products.length == 0){
+      return null;
+    }
+
+    isLoading = true;
+    notifyListeners();
+
+    double productsPrice = getProductsPrice();
+    double shipPrice = getShipPrice();
+    double discount = getDiscount();
+
+    //todas as informações necessárias do pedido
+    DocumentReference refOrder = await Firestore.instance.collection("orders").add({
+      "clientId" : user.firebaseUser.uid,
+      "products" : products.map((cartProduct) => cartProduct.toMap()).toList(),
+      "shipPrice" : shipPrice,
+      "productsPrice" : productsPrice,
+      "discount" : discount,
+      "totalPrice" : productsPrice + shipPrice - discount,
+      "status" : 1
+    });
+
+    //colocado a referência do pedido
+    await Firestore.instance.collection("users").document(user.firebaseUser.uid).
+    collection("orders").document(refOrder.documentID).setData(
+      {
+        "orderId" : refOrder.documentID,
+      }
+    );
+
+    //pegando todos os produtos do carrinho
+    QuerySnapshot query = await Firestore.instance.collection("users").
+    document(user.firebaseUser.uid).collection("cart").getDocuments();
+
+    //vai pegar cada produto e deletar do carrinho
+    for (DocumentSnapshot doc  in query.documents){
+      doc.reference.delete();
+    }
+
+    //resetando tudo (lista local de produtos no carrinho, cupom de  desconto, percentual de desconto)
+    products.clear();
+
+    couponCode = null;
+
+    discountPercentage = 0;
+
+    //indica que já completou
+    isLoading = false;
+
+    notifyListeners();
+
+    return refOrder.documentID;
+  }
+
   //função que carregará o carrinho
   void _loadCartItems() async{
     QuerySnapshot query = await Firestore.instance.collection("users").document(user.firebaseUser.uid).
