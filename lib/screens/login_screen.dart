@@ -1,6 +1,8 @@
 //Tela de Login
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/user_model.dart';
+import 'package:loja_virtual/screens/home_screen.dart';
 import 'package:loja_virtual/screens/singup_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 

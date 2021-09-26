@@ -3,7 +3,12 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loja_virtual/datas/cart_product.dart';
 import 'package:loja_virtual/datas/product_data.dart';
+import 'package:loja_virtual/models/cart_model.dart';
+import 'package:loja_virtual/models/user_model.dart';
+import 'package:loja_virtual/screens/cart_screen.dart';
+import 'package:loja_virtual/screens/login_screen.dart';
 
 class ProductScreen extends StatefulWidget {
 
@@ -125,9 +130,30 @@ class _ProductScreenState extends State<ProductScreen> {
                   child: ElevatedButton(
                     //ao selecionar um tamanho ele muda de estado
                     onPressed:
-                      sizeProduct != null ? (){}: null,
+                      sizeProduct != null ? (){
+                        //se estiver logado, poderá adicionar ao carrinho:
+                        if(UserModel.of(context).isLoggedIn()){
 
-                    child: Text("Adicionar ao Carrinho",
+                            CartProduct cartProduct = CartProduct();
+                            cartProduct.size = sizeProduct;
+                            cartProduct.quantity = 1;
+                            cartProduct.pid = product.id;
+                            cartProduct.category = product.category;
+
+                            CartModel.of(context).addCartItem(cartProduct);
+
+                            //ao adicionar ao carrinho é direcionado diretamente para tela do carrinho
+                            Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) => CartScreen()));
+                        }
+                        //se estiver deslogado e clicar no botão então ele leva para a tela de login
+                        else{
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => LoginScreen()));
+                        }
+                      }: null,
+
+                    child: Text(UserModel.of(context).isLoggedIn() ? "Adicionar ao Carrinho" : "Entre para Comprar",
                       style: TextStyle(fontSize: 18.0),
                     ),
                     style: ButtonStyle(

@@ -20,6 +20,10 @@ class UserModel extends Model{
   //indica se está processando alguma coisa
   bool isLoading = false;
 
+  //método estático é um método da classe e não do objeto
+  //faremos isso pois vai precisar para o sistema do carrinho
+  static UserModel of(BuildContext context) => ScopedModel.of<UserModel>(context);
+
   //carregar o usuário logado desde o início
   @override
   void addListener(VoidCallback listener) {
@@ -118,11 +122,11 @@ class UserModel extends Model{
   //pegando o usuário atual
   Future<Null> _loadCurrentUser() async{
     //se for nulo, vai tentar logar
-    if (userData == null){
+    if (firebaseUser == null){
       firebaseUser = await _auth.currentUser();
     }
     //se logou:
-    if (userData != null){
+    if (firebaseUser != null){
       if(userData["name"] == null){
         DocumentSnapshot docUser = await Firestore.instance.collection("users").document(firebaseUser.uid).get();
         userData = docUser.data;
