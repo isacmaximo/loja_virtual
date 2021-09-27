@@ -26,7 +26,7 @@ class ProductData{
   }
 
   //Resumo das informações do produto
-  Map<String,dynamic> toResumeMap(){
+  Map<String,dynamic> toResumedMap(){
     return {
       "title" : title,
       "description" : description,

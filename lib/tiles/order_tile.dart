@@ -26,6 +26,9 @@ class OrderTile extends StatelessWidget {
               }
 
               else {
+
+                int status = snapshot.data["status"];
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -37,6 +40,29 @@ class OrderTile extends StatelessWidget {
 
                     Text(_buildProductsText(snapshot.data)),
 
+                    SizedBox(height: 4.0,),
+
+                    Text("Status do Pedido:",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 4.0,),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+
+                        //etapa 1
+                        _buildCircle("1", "Preparação", status, 1),
+                        //linha
+                        Container(height: 1.0, width: 40.0, color: Colors.grey[500],),
+                        //etapa 2
+                        _buildCircle("2", "Transporte", status, 2),
+                        //linha
+                        Container(height: 1.0, width: 40.0, color: Colors.grey[500],),
+                        //etapa 3
+                        _buildCircle("3", "Entrega", status, 3),
+                      ],
+                    )
+
                   ],
                 );
               }
@@ -45,13 +71,61 @@ class OrderTile extends StatelessWidget {
       ),
     );
   }
-    String _buildProductsText(DocumentSnapshot snapshot){
-      String text = "Descrição:\n";
-      //para cada um dos produtos do pedido
-      for(LinkedHashMap p in snapshot.data["products"]){
-        text += "${p["quantity"]} x ${p["product"]["title"]} (R\$ ${p["product"]["price"].toStringAsFixed(2)})\n";
-      }
-      text += "Total: R\$ ${snapshot.data["totalPrice"].toStringAsFixed(2)}\n";
-       return text;
+
+  String _buildProductsText(DocumentSnapshot snapshot){
+    String text = "Descrição:\n";
+    //para cada um dos produtos do pedido
+    for(LinkedHashMap p in snapshot.data["products"]){
+      text += "${p["quantity"]} x ${p["product"]["title"]} (R\$ ${p["product"]["price"].toStringAsFixed(2)})\n";
     }
+    text += "Total: R\$ ${snapshot.data["totalPrice"].toStringAsFixed(2)}\n";
+     return text;
+  }
+
+  //widget circular do progresso do pedido
+  Widget _buildCircle(String title, String subtitle, int status, int thisStatus){
+
+    Color backColor;
+    Widget child;
+
+    //
+    if(status < thisStatus){
+      backColor = Colors.grey[500];
+      child = Text(title, style: TextStyle(color: Colors.white),);
+    }
+
+    else if(status == thisStatus){
+      backColor = Colors.blue;
+      child = Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          Text(title, style: TextStyle(color: Colors.white),),
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          )
+        ],
+      );
+    }
+
+    else{
+      backColor = Colors.green;
+      child = Icon(Icons.check);
+    }
+
+    return Column(
+      children: <Widget>[
+
+        CircleAvatar(
+          radius:  20.0,
+          backgroundColor: backColor,
+          child: child,
+        ),
+
+        Text(subtitle)
+
+      ],
+    );
+
+  }
+
 }
